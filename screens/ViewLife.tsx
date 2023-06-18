@@ -1,12 +1,20 @@
+import axios from 'axios';
 import * as React from 'react';
-import { Text, View, StyleSheet } from 'react-native';
+import { Text, View, StyleSheet, Button } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
 
-
+// https://avo-v3fp.onrender.com/add_entries
 export default function ViewLife() {
+  const syncData = () => {
+    axios.post('http://tehilapelled16.pythonanywhere.com/add_entries').catch(function (error: { message: string; }) {
+      console.log(error.message + " NOT ABLE TO SYNC ENTRIES");
+    });
+  };
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>View Life</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
+ <TouchableOpacity style={styles.buttonSend}>
+        <Button title="Sync with arango" onPress={syncData} color="transparent" />
+      </TouchableOpacity>     
     </View>
   );
 }
@@ -25,5 +33,15 @@ const styles = StyleSheet.create({
     marginVertical: 30,
     height: 1,
     width: '80%',
+  },
+  buttonSend: {
+    height: 40,
+    borderRadius: 25,
+    backgroundColor: "#8d015a",
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "center",
+    marginTop: 15,
+    width: 200
   },
 });

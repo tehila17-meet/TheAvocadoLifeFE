@@ -1,56 +1,80 @@
 
-import { SafeAreaView, Button, StyleSheet, TouchableOpacity, TouchableHighlight, Text, View, TextInput, FlatList } from 'react-native';
-import * as React from 'react';
-import { TEXT } from '../styles/styles';
-import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { ImpactRating } from './impactRating';
+import * as React from 'react';
+import { useEffect, useState } from 'react';
+import { Button, DevSettings, RefreshControl, ScrollView, StyleSheet, TextInput, TouchableHighlight, TouchableOpacity, View } from 'react-native';
+import { TEXT } from '../styles/styles';
+
+import RNRestart from 'react-native-restart';
+
+import {
+  heightPercentageToDP as hp,
+  widthPercentageToDP as wp
+} from 'react-native-responsive-screen';
 export function DataInputForm({ currentCollection }) {
 
   //Get Defining Characteristic List
   const [definingtraitOptions, setDefiningCharectaristicOptions] = useState([])
   useEffect(() => {
-    axios.get("http://localhost:5000/get_document_names/Defining-Traits")
+    axios.get("http://tehilapelled16.pythonanywhere.com/get_document_names/Defining-Traits")
       .then((response) => setDefiningCharectaristicOptions(response.data.result))
   }, []);
 
   //Form Data Collection Holders
-  const [title, setTitle] = useState()
-  const [impactRating, setImpactRating] = useState()
+  const [title, setTitle] = useState("")
+  const [impactRating, setImpactRating] = useState("")
   const [definingtraits, setDefiningCharectaristics] = useState(Array())
 
   //Form Data Collection Functions
-  const handleTitleChange = (e) => {
-    setTitle(e.target.value);
-  };
-  const handleImpactRatingChange = (e) => {
-    setImpactRating(e.target.value);
-  };
-  const handleDefiningCharectaristicAddition = (e) => {
-    let definingtraitName = e.target.innerText
-    if (!definingtraits.includes(definingtraitName)) {
-      definingtraits.push(definingtraitName)
-      e.target.style.backgroundColor = '#51caef'
+  // const handleTitleChange = (e) => {
+  //   console.log(e.target.value)
+
+  //   setTitle(e.target.value);
+  // };
+  // const handleImpactRatingChange = (e) => {
+  //   setImpactRating(e.target.value);
+  // };
+  const handleDefiningCharectaristicAddition = (definingTraitName: any) => {
+    console.log(definingTraitName)
+
+    // let definingtraitName = e.target.innerText
+    if (!definingtraits.includes(definingTraitName)) {
+      definingtraits.push(definingTraitName)
+      // e.target.style.backgroundColor = '#51caef'
       setDefiningCharectaristics(definingtraits);
     }
-    else if (definingtraits.includes(definingtraitName) && definingtraits.length > 0) {
-      definingtraits.pop(definingtraitName)
-      e.target.style.backgroundColor = 'transparent'
+    else if (definingtraits.includes(definingTraitName) && definingtraits.length > 0) {
+      definingtraits.pop(definingTraitName)
+      // e.target.style.backgroundColor = 'transparent'
       setDefiningCharectaristics(definingtraits)
     }
   };
 
+  // const startReload = ()=> RNRestart.Restart();
+
   //Form Data Sender
   const sendEntryData = () => {
-    axios.post('http://localhost:5000/add_entries', {
-      affected_collection: currentCollection,
+    console.log(currentCollection + " " + title + " " + definingtraits)
+    axios.post('http://tehilapelled16.pythonanywhere.com/save_entries_locally', {
+      affecting_collection: currentCollection,
       title: title,
       impact_rating: impactRating,
       defining_traits: definingtraits
+    }).then(response => {
+
+      if (response.status == 200) {
+        console.log("Sent to local")
+
+      }
+      // startReload()
+      RNRestart.Restart();
+
     }).catch(function (error) {
-      console.log(error.message);
+      console.log(error.message + " NOT ABLE TO SEND ENTRIES :(");
     });
   };
+
+
 
   return (
 
@@ -63,8 +87,8 @@ export function DataInputForm({ currentCollection }) {
           placeholder="Title"
           value={title}
           placeholderTextColor="#fff"
-          onChange={handleTitleChange} />
-       
+          onChangeText={setTitle} />
+
         <TextInput
           style={styles.inputFieldNumeric}
           keyboardType="numeric"
@@ -72,7 +96,7 @@ export function DataInputForm({ currentCollection }) {
           placeholder="Impact Rating"
           value={impactRating}
           placeholderTextColor="#fff"
-          onChange={handleImpactRatingChange}
+          onChangeText={setImpactRating}
         />
       </View>
       <View style={styles.definingtraitRow}>
@@ -80,7 +104,7 @@ export function DataInputForm({ currentCollection }) {
           <View style={styles.definingtraitBox}>
             <TouchableHighlight
               activeOpacity={0.6}>
-              <Button title={definingtrait} onPress={handleDefiningCharectaristicAddition} color="transparent" />
+              <Button title={definingtrait} onPress={() => handleDefiningCharectaristicAddition(definingtrait)} color="transparent" />
             </TouchableHighlight>
           </View>
         ))}
@@ -107,21 +131,20 @@ const styles = StyleSheet.create({
 
   },
   inputFieldText: {
-    height: 30,
     borderRadius: 30,
     paddingHorizontal: 30,
     fontSize: 18,
     color: "#fff",
     backgroundColor: "transparent",
     textAlign: "center",
+    marginRight: 6,
     textAlignVertical: "center",
-    marginRight: 10,
-    flex: 1,
+    width: wp('50%'),
+    height: hp('7%'),
     borderColor: "#fff",
     borderWidth: 3
   },
   inputFieldNumeric: {
-    height: 30,
     borderRadius: 30,
     paddingHorizontal: 15,
     fontSize: 16,
@@ -129,7 +152,8 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
     textAlign: "center",
     textAlignVertical: "center",
-    flex: 1,
+    width: wp('40%'),
+    height: hp('7%'),
     borderColor: "#fff",
     borderWidth: 3
   },
@@ -148,14 +172,18 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 15,
     paddingVertical: 10,
+    width: wp('100%'),
+
   },
   definingtraitRow: {
     flexDirection: 'row',
+    flexWrap: 'wrap',
+
     justifyContent: 'space-between'
   },
   definingtraitBox: {
-    marginRight: 10,
-    marginLeft: 10,
+    marginRight: 1,
+    marginTop: 2,
     borderColor: '#51caef',
     borderWidth: 1
   }

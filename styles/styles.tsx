@@ -34,7 +34,7 @@ export const CENTER = {
 };
 
 export const BOX = {
-  flex: 1,
+ 
   backgroundColor: BG_COLOR,
   padding: 15,
   borderRadius: 10,

@@ -1,6 +1,10 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity } from "react-native";
 import { FontAwesome5 } from "@expo/vector-icons";
+import {heightPercentageToDP as hp,
+    widthPercentageToDP as wp
+} from 'react-native-responsive-screen';
+
 import {
     CENTER,
     BOX,
@@ -20,7 +24,7 @@ export function CollectionItem({ label, iconName, iconColor, isActive, setActive
             ]}
             onPress={setActive}
         >
-            <FontAwesome5 name={iconName} size={25} color={iconColor} />
+            <FontAwesome5 name={iconName} size={50} color={iconColor} />
             <Text style={styles.label}>{label}</Text>
         </TouchableOpacity>
     );
@@ -31,8 +35,8 @@ const styles = StyleSheet.create({
         ...CENTER,
         ...BOX,
         marginHorizontal: 10,
-        width: 80,
-        height: 80
+        width: wp('25%'),
+        height: hp('10%'),
     },
     label: {
         ...TEXT_LABEL,

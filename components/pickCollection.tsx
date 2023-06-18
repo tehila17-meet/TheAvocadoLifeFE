@@ -6,13 +6,13 @@ import { CollectionItem } from './CollectionItem'
 import { ROW, CENTER, TEXT } from '../styles/styles'
 import { useState, useEffect } from 'react';
 import axios from 'axios'
-
+//https://avo-v3fp.onrender.com/
 export function PickCollections({ chosenCollection }){
 
     //Get Affecting Collection List
     const [affectingCollections, setaffectingCollections] = useState([])
     useEffect(() => {
-      axios.get("http://localhost:5000/get_collection_names/Affecting")
+      axios.get("http://tehilapelled16.pythonanywhere.com/get_collection_names/Affecting")
         .then((response) => setaffectingCollections(response.data.result))
     }, []);
 
@@ -94,6 +94,6 @@ const styles = StyleSheet.create({
     },
     collectionRow:{
       flexDirection:'row',
-      margin:'10px'
+      margin:10
     }
   });

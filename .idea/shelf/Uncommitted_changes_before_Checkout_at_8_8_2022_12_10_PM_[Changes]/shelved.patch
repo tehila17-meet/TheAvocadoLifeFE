@@ -1,0 +1,17 @@
+Index: EnvVars.ts
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>const backEndUrl= 'http://127.0.0.1:5000/';\r\nconst backEndUrl2 = 'https://theavocadolife.herokuapp.com/';\r\n\r\n\r\nexport default {\r\n    backEndProperties: {\r\n        url: 'https://theavocadolife.herokuapp.com/'\r\n    }\r\n};
+===================================================================
+diff --git a/EnvVars.ts b/EnvVars.ts
+--- a/EnvVars.ts	
++++ b/EnvVars.ts	
+@@ -4,6 +4,6 @@
+ 
+ export default {
+     backEndProperties: {
+-        url: 'https://theavocadolife.herokuapp.com/'
++        url: 'http://127.0.0.1:5000/'
+     }
+ };
+\ No newline at end of file
